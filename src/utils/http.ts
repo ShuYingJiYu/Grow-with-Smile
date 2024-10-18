@@ -1,5 +1,5 @@
 // src/utils/http.ts
-import { useClientStore } from "@/stores"
+import { useUserStore } from "@/stores"
 // 请求基地址
 const baseURL = 'http://localhost:8080'
 
@@ -15,8 +15,8 @@ const httpInterceptor = {
     options.timeout = 10000
       
     // 3. 添加 token 请求头标识
-    const clientStore = useClientStore()
-    const token = clientStore.token
+    const userStore = useUserStore()
+    const token = userStore.token
     if(token){
       options.header.Authorization = token
     }
@@ -47,8 +47,8 @@ export const http = <T>(options: UniApp.RequestOptions) => {
           resolve(res.data as Data<T>)
         } else if (res.statusCode == 401) {
           // 401错误  -> 清理用户信息，跳转到登录页
-          const clientStore = useClientStore()
-          clientStore.clearToken()
+          const UserStore = useUserStore()
+          UserStore.clearToken()
           uni.navigateTo({ url: '/pages/login/login' })
           reject(res)
         } else {
